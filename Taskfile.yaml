@@ -1,0 +1,91 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  TARGET_FOLDER: artemis-docker
+  TMP_FOLDER: .tmp
+  REPO: apache/activemq-artemis
+  IMAGE: vinicius73/activemq-artemis
+  TAG:
+    sh: curl -s "https://api.github.com/repos/{{ .REPO }}/tags" | jq -r '.[0].name'
+  TAG_MINOR:
+    sh: 'echo "$(semver-cli get major {{ .TAG }}).$(semver-cli get minor {{ .TAG }})"'
+  TAG_MAJOR:
+    sh: semver-cli get major {{ .TAG }}
+
+tasks:
+  clean:
+    desc: remove {{ .TMP_FOLDER }} folder
+    cmds:
+      - rm -rf {{ .TMP_FOLDER }}
+
+  clone:
+    desc: clone artemis from last release
+    deps:
+      - clean
+    cmds:
+      - git clone --single-branch -b {{ .TAG }} git@github.com:{{ .REPO }}.git {{ .TMP_FOLDER }}
+      - rm -rf {{ .TARGET_FOLDER }}
+      - cp -r {{ .TMP_FOLDER }}/{{ .TARGET_FOLDER }} {{ .TARGET_FOLDER }}
+
+  prepare:
+    desc: prepare docker build
+    dir: '{{ .TARGET_FOLDER }}'
+    cmds:
+      - rm -rf ./_TMP_
+      - cmd: ./prepare-docker.sh --from-release --artemis-version {{ .TAG }}
+        ignore_error: true
+
+  build:
+    desc: build docker image
+    dir: '{{ .TARGET_FOLDER }}/_TMP_/artemis/{{ .TAG }}'
+    cmds:
+      - docker build -f ./docker/Dockerfile-{{ .DISTRO}} -t {{ .IMAGE }}:{{ .DOCKER_TAG }} .
+      - docker tag {{ .IMAGE }}:{{ .DOCKER_TAG }} {{ .IMAGE }}:{{ .DOCKER_TAG_MINOR }}
+      - docker tag {{ .IMAGE }}:{{ .DOCKER_TAG }} {{ .IMAGE }}:{{ .DOCKER_TAG_MAJOR }}
+      - docker images --filter='reference={{ .IMAGE }}:*{{ .DISTRO }}'
+    vars:
+      DISTRO: '{{ default "debian" .DISTRO }}'
+      DOCKER_TAG: v{{ .TAG }}-{{ .DISTRO}}
+      DOCKER_TAG_MINOR: v{{ .TAG_MINOR }}-{{ .DISTRO}}
+      DOCKER_TAG_MAJOR: v{{ .TAG_MAJOR }}-{{ .DISTRO}}
+
+  push:
+    desc: push image to docker hub
+    cmds:
+      - docker push {{ .IMAGE }}:{{ .DOCKER_TAG }}
+      - docker push {{ .IMAGE }}:{{ .DOCKER_TAG_MINOR }}
+      - docker push {{ .IMAGE }}:{{ .DOCKER_TAG_MAJOR }}
+    vars:
+      DISTRO: '{{ default "debian" .DISTRO }}'
+      DOCKER_TAG: v{{ .TAG }}-{{ .DISTRO}}
+      DOCKER_TAG_MINOR: v{{ .TAG_MINOR }}-{{ .DISTRO}}
+      DOCKER_TAG_MAJOR: v{{ .TAG_MAJOR }}-{{ .DISTRO}}
+
+  build:centos:
+    cmds:
+      - task: build
+        vars:
+          DISTRO: centos
+
+  build:debian:
+    cmds:
+      - task: build
+        vars:
+          DISTRO: debian
+
+  push:centos:
+    cmds:
+      - task: push
+        vars:
+          DISTRO: centos
+
+  push:debian:
+    cmds:
+      - task: push
+        vars:
+          DISTRO: debian
+
+  build:all:
+    deps: [build:centos, build:debian]
