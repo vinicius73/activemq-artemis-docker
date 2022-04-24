@@ -1,0 +1,16 @@
+version: "3.9"
+
+volumes:
+  artemis-instance:
+
+services:
+  activemq:
+    image: vinicius73/activemq-artemis:v2-debian
+    # environment:
+    #   ARTEMIS_USER: 'supper'
+    #   ARTEMIS_PASSWORD: 'supper'
+    volumes:
+      - artemis-instance:/var/lib/artemis-instance
+    ports:
+      - 61616:61616
+      - 8161:8161

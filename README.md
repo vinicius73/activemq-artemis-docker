@@ -19,3 +19,7 @@ task prepare
 task build:all
 task push:all
 ```
+
+## Docker Compose
+
+Check [`docker-compose.yml`](./docker-compose.yml) to see a example of usage.
