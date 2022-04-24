@@ -8,6 +8,8 @@ This projects automates the docker build generation of [ActiveMQ Artemis](https:
 ### Requeriments
 
 - [Docker >= v20](https://docs.docker.com/engine/install/)
+- [semver-cli](https://github.com/davidrjonas/semver-cli)
+  - `go install github.com/davidrjonas/semver-cli@latest`
 - [Task v3](https://taskfile.dev/)
 
 ## Commands
