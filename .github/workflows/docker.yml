@@ -1,4 +1,4 @@
-name: Docker HUB
+name: Docker Build
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
       - 'master'
 
 jobs:
-  docker:
+  docker-hub:
+    name: 'Docker HUB'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
