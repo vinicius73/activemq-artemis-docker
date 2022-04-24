@@ -25,7 +25,7 @@ tasks:
     deps:
       - clean
     cmds:
-      - git clone --single-branch -b {{ .TAG }} git@github.com:{{ .REPO }}.git {{ .TMP_FOLDER }}
+      - git clone --single-branch -b {{ .TAG }} https://github.com/{{ .REPO }}.git {{ .TMP_FOLDER }}
       - rm -rf {{ .TARGET_FOLDER }}
       - cp -r {{ .TMP_FOLDER }}/{{ .TARGET_FOLDER }} {{ .TARGET_FOLDER }}
 
