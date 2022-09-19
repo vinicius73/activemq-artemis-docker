@@ -1,0 +1,46 @@
+name: Docker Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 0 * * 0' # every sunday
+
+jobs:
+  docker-hub:
+    name: 'Docker HUB'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.19
+
+      - name: Install dependencies
+        run: |
+          go version
+          go install github.com/davidrjonas/semver-cli@latest
+
+      - name: Checkout new version
+        id: clone
+        run: |
+          task clone
+          LAST_VERSION=$(cat LAST_VERSION.txt)
+          echo "::set-output name=version::$LAST_VERSION"
+
+      - name: Check for uncommitted changes
+        uses: mskri/check-uncommitted-changes-action@v1.0.1
+        id: check-changes
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        if: steps.check-changes.outputs.outcome == failure()
+        with:
+          default_author: github_actions
+          message: 'Update to v${{steps.clone.outputs.version}}'
