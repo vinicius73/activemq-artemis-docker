@@ -54,6 +54,21 @@ jobs:
         with:
           name: artemis-docker
 
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.19
+
+      - name: Install dependencies
+        run: |
+          go version
+          go install github.com/davidrjonas/semver-cli@latest
+
       - name: CentOS
         run: |
           task build:centos
@@ -79,6 +94,21 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: artemis-docker
+
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.19
+
+      - name: Install dependencies
+        run: |
+          go version
+          go install github.com/davidrjonas/semver-cli@latest
 
       - name: CentOS
         run: |
