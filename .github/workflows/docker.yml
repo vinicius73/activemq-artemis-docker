@@ -1,11 +1,10 @@
 name: Docker Build
 
 on:
-  schedule:
-    - cron:  '0 0 * * 0' # every sunday
-  push:
-    branches:
-      - 'master'
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - 'master'
 
 jobs:
   docker-hub:
