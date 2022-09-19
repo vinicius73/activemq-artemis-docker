@@ -64,5 +64,5 @@ jobs:
 
       - name: Debian > GitHub CR
         run: |
-          task build:debian IMAGE=ghcr.io/activemq-artemis-docker
-          task push:debian IMAGE=ghcr.io/activemq-artemis-docker
+          task build:debian IMAGE=ghcr.io/${{ github.repository }}
+          task push:debian IMAGE=ghcr.io/${{ github.repository }}
