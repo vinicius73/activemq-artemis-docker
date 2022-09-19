@@ -1,4 +1,4 @@
-name: Docker Build
+name: Check Astemis Changes
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker-hub:
-    name: 'Docker HUB'
+    name: 'Update Astemis'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
