@@ -5,12 +5,17 @@ volumes:
 
 services:
   activemq:
-    image: vinicius73/activemq-artemis:v2-debian
-    # environment:
-    #   ARTEMIS_USER: 'supper'
-    #   ARTEMIS_PASSWORD: 'supper'
+    image: vinicius73/activemq-artemis:v2-ubuntu-11
+    environment:
+      ARTEMIS_USER: 'supper'
+      ARTEMIS_PASSWORD: 'supper'
     volumes:
       - artemis-instance:/var/lib/artemis-instance
     ports:
-      - 61616:61616
-      - 8161:8161
+      - "${ACTIVEMQ_WEB_PORT:-8161}:8161"     # Web Server
+      - "${ACTIVEMQ_CORE_PORT:-61616}:61616"  # CORE,MQTT,AMQP,HORNETQ,STOMP,OPENWIRE
+      - "${ACTIVEMQ_AMQP_PORT:-5672}:5672"    # AMQP
+      # - "${ACTIVEMQ_JMX_PORT:-9404}:9404"     # JMX Exporter
+      # - "${ACTIVEMQ_HORNETQ_PORT:-5445}:5445" # HORNETQ,STOMP
+      # - "${ACTIVEMQ_MQTT_PORT:-1883}:1883"    # MQTT
+      # - "${ACTIVEMQ_STOMP_PORT:-61613}:61613" # STOMP

@@ -45,10 +45,15 @@ jobs:
           task build:centos
           task push:centos
 
-      - name: Build Debian
+      - name: Ubuntu
         run: |
-          task build:debian
-          task push:debian
+          task build:ubuntu
+          task push:ubuntu
+
+      - name: Ubuntu JRE
+        run: |
+          task build:ubuntu-jre
+          task push:ubuntu-jre
 
   github-registry:
     name: 'GitHub Container Registry'
@@ -89,7 +94,12 @@ jobs:
           task build:centos IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
           task push:centos IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
 
-      - name: Debian
+      - name: Ubuntu
         run: |
-          task build:debian IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
-          task push:debian IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
+          task build:ubuntu IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
+          task push:ubuntu IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
+
+      - name: Ubuntu JRE
+        run: |
+          task build:ubuntu-jre IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis
+          task push:ubuntu-jre IMAGE=ghcr.io/${{ github.repository_owner }}/activemq-artemis

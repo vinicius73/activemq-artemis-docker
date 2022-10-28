@@ -47,7 +47,7 @@ tasks:
       - docker tag {{ .IMAGE }}:{{ .DOCKER_TAG }} {{ .IMAGE }}:{{ .DOCKER_TAG_MAJOR }}
       - docker images --filter='reference={{ .IMAGE }}:*{{ .DISTRO }}'
     vars:
-      DISTRO: '{{ default "debian" .DISTRO }}'
+      DISTRO: '{{ default "ubuntu-11" .DISTRO }}'
       DOCKER_TAG: v{{ .TAG }}-{{ .DISTRO}}
       DOCKER_TAG_MINOR: v{{ .TAG_MINOR }}-{{ .DISTRO}}
       DOCKER_TAG_MAJOR: v{{ .TAG_MAJOR }}-{{ .DISTRO}}
@@ -59,7 +59,7 @@ tasks:
       - docker push {{ .IMAGE }}:{{ .DOCKER_TAG_MINOR }}
       - docker push {{ .IMAGE }}:{{ .DOCKER_TAG_MAJOR }}
     vars:
-      DISTRO: '{{ default "debian" .DISTRO }}'
+      DISTRO: '{{ default "centos7-11" .DISTRO }}'
       DOCKER_TAG: v{{ .TAG }}-{{ .DISTRO}}
       DOCKER_TAG_MINOR: v{{ .TAG_MINOR }}-{{ .DISTRO}}
       DOCKER_TAG_MAJOR: v{{ .TAG_MAJOR }}-{{ .DISTRO}}
@@ -68,25 +68,37 @@ tasks:
     cmds:
       - task: build
         vars:
-          DISTRO: centos
+          DISTRO: centos7-11
 
-  build:debian:
+  build:ubuntu:
     cmds:
       - task: build
         vars:
-          DISTRO: debian
+          DISTRO: ubuntu-11
+
+  build:ubuntu-jre:
+    cmds:
+      - task: build
+        vars:
+          DISTRO: ubuntu-11-jre
 
   push:centos:
     cmds:
       - task: push
         vars:
-          DISTRO: centos
+          DISTRO: centos7-11
 
-  push:debian:
+  push:ubuntu:
     cmds:
       - task: push
         vars:
-          DISTRO: debian
+          DISTRO: ubuntu-11
+
+  push:ubuntu-jre:
+    cmds:
+      - task: push
+        vars:
+          DISTRO: ubuntu-11-jre
 
   build:all:
-    deps: [build:centos, build:debian]
+    deps: [build:centos, build:ubuntu]
